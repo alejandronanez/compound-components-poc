@@ -1,34 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { SyntheticEvent, useState } from "react";
+import { useStack } from "./useStack";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { push, peek, pop } = useStack();
+  const [text, setText] = useState("");
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!text.length) {
+      return;
+    }
+
+    push({
+      key: text,
+      component: "a component",
+      queryParams: [{ key: text, value: text.toUpperCase() }],
+    });
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <section>
+      <pre style={{ width: "100%" }}>
+        {JSON.stringify(peek().slice().reverse(), null, 2)}
+      </pre>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "inline-flex", flexDirection: "column", gap: 12 }}
+      >
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button>Add to stack</button>
+        <button type="button" onClick={() => pop()}>
+          Remove from the stack
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+      </form>
+    </section>
+  );
 }
 
-export default App
+export default App;
